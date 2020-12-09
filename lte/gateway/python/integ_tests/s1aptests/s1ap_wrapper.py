@@ -14,6 +14,7 @@ limitations under the License.
 import os
 import time
 import ctypes
+import redis
 
 import s1ap_types
 from integ_tests.common.magmad_client import MagmadServiceGrpc
@@ -87,6 +88,10 @@ class TestWrapper(object):
         if not self.wait_gateway_healthy:
             self.init_s1ap_tester()
 
+        redis_client = redis.Redis(
+            host=os.environ.get('GATEWAY_IP', '192.168.60.142'),
+            port=6380)
+        redis_client.flushall()
         self._configuredUes = []
         self._ue_idx = 0  # Index of UEs already used in test
         self._trf_util = TrafficUtil()
